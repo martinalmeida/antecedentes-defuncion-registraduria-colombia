@@ -29,6 +29,12 @@ Back para el sistema de verificación, validacion y aprovación de clientes para
    ```
 
 4. Inicia el servidor:
+
    ```bash
    uvicorn app.main:app --reload
+   ```
+
+5. (OPCIONAL) Agregar nuevas dependencias al requirements.txt:
+   ```bash
+   pip freeze > requirements.txt
    ```
