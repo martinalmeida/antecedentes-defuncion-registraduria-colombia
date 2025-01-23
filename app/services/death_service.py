@@ -10,6 +10,11 @@ class DeathService:
                     "ip": payload["ip_address"]
                 })
                 response.raise_for_status()
-                return response.json()
+                result = response.json()
+                return {
+                    "info": result["vigencia"],
+                    "date_consulted": result["fecha"],
+                    "state": False if result["vigencia"] == "Vigente (Vivo)" else True
+                }
             except httpx.HTTPStatusError as e:
                 raise Exception(e.response.json())
