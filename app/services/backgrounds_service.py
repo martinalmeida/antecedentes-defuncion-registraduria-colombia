@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
 
-class SearchPersonService:
+class BackgroundService:
     def __init__(self):
         self.options = Options()
         self.options.add_argument("start-maximized")
@@ -23,7 +23,7 @@ class SearchPersonService:
             "¿ Cual es la Capital de Antioquia (sin tilde)?": "medellin"
         }
 
-    async def search_person(self, payload: dict):
+    async def search_background(self, payload: dict):
         cedula = payload.get("id_card")
         silent = payload.get("silent", False)
         
@@ -84,7 +84,8 @@ class SearchPersonService:
             # Retornar los resultados
             return {
                 "name": nombre,
-                "background": antecedentes
+                "info": antecedentes,
+                "state": False if antecedentes == "El ciudadano no presenta antecedentes" else True
                 }
 
         except Exception as e:
