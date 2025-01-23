@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
 import time
 
 class SearchPersonService:
@@ -23,7 +24,7 @@ class SearchPersonService:
         }
 
     async def search_person(self, payload: dict):
-        cedula = payload.get("cedula")
+        cedula = payload.get("id_card")
         silent = payload.get("silent", False)
         
         try:
@@ -63,9 +64,17 @@ class SearchPersonService:
             # Esperar respuesta
             while True:
                 if len(driver.find_elements(By.CLASS_NAME, "datosConsultado")) > 0:
-                    consultado = driver.find_element(By.CLASS_NAME, "datosConsultado")
-                    info = consultado.find_element(By.XPATH,'following-sibling::*[1]').get_attribute("innerHTML")
-                    status = "1"
+                    info = driver.find_element(By.CLASS_NAME, "datosConsultado")
+                    raw_html = info.get_attribute("innerHTML")
+                    # Usar BeautifulSoup para procesar el HTML
+                    soup = BeautifulSoup(raw_html, "html.parser")
+                    # Extraer texto y manejar elementos span para nombres
+                    spans = soup.find_all('span')
+                    nombres = " ".join(span.get_text(strip=True) for span in spans)
+                    # Procesar el texto general
+                    texto_general = soup.get_text(" ", strip=True)
+                    nombre = texto_general.replace("".join(span.get_text(strip=True) for span in spans), nombres)
+                    antecedentes = info.find_element(By.XPATH, 'following-sibling::*[1]').get_attribute("innerHTML")
                     break
                 time.sleep(1)
 
@@ -73,10 +82,13 @@ class SearchPersonService:
             driver.close()
 
             # Retornar los resultados
-            return {"status": status, "message": "Consulta exitosa", "data": info}
+            return {
+                "name": nombre,
+                "background": antecedentes
+                }
 
         except Exception as e:
             # Manejo de errores
             if 'driver' in locals():
                 driver.close()
-            return {"status": "0", "message": f"Error: {str(e)}", "data": None}
+            return str(e)
