@@ -1,6 +1,6 @@
-# core-back-end-api
+# antecedentes-defuncion-registraduria-colombia
 
-Back para el sistema de verificación, validacion y aprovación de clientes para seguros
+API para consulta de antecedentes penales ante la procuraduria y verificación de personas vivas naturales en Colombia.
 
 ## Requisitos
 
