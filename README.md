@@ -38,3 +38,11 @@ API para consulta de antecedentes penales ante la procuraduria y verificación d
    ```bash
    pip freeze > requirements.txt
    ```
+
+6. Hacer petición al API en local por medio de postman al end-point de tipo POST **http://127.0.0.1:8000/test-search-person** y su body:
+   ```bash
+   {
+      "id_card": "99999",
+      "ip_address": "192.289.202"
+   }
+   ```
